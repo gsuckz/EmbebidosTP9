@@ -4,7 +4,7 @@
 #include "semphr.h"
 #include "task.h"
 
-#define PRESCALER 1 //Se usa para accelerar ael reloj para las pruebas
+#define PRESCALER 60 //Se usa para accelerar ael reloj para las pruebas
 typedef struct Control{
     Poncho_p poncho;
     Reloj * reloj;
@@ -156,7 +156,7 @@ void procesarBotones(Control * controlador, int teclas){
                 for (int i=0; i<=3 ;i++) {
                     controlador->temp[i] = 0;
                 }                                           
-                if(isHighF(controlador->poncho,1)) {
+                if(isHighF(controlador->poncho,4)) {
                     setTimeOut(controlador,3);
                     controlador->estado = E_ESPERA_MOD_HORARIO_R;
                 }
@@ -165,7 +165,7 @@ void procesarBotones(Control * controlador, int teclas){
                     controlador->estado = E_ESPERA_MOD_ALARMA_R;
                 }
             break;case E_MOSTRAR_HORA: //FALLTHRU
-                if(isHighF(controlador->poncho,1)) {
+                if(isHighF(controlador->poncho,4)) {
                     setTimeOut(controlador,3);
                     controlador->estado = E_ESPERA_MOD_HORARIO;
                 }
@@ -184,7 +184,7 @@ void procesarBotones(Control * controlador, int teclas){
                     controlador->estado = E_MOD_ALARMA_MIN;
                 }
             break;case E_ESPERA_MOD_HORARIO:
-                if(!isHighF(controlador->poncho,1)) controlador->estado = E_MOSTRAR_HORA;
+                if(!isHighF(controlador->poncho,4)) controlador->estado = E_MOSTRAR_HORA;
                 if(!timeOutCheck(controlador)) {
                     setTimeOut(controlador,30);
                     relojHorario(controlador->reloj,controlador->temp);
@@ -264,7 +264,7 @@ void procesarBotones(Control * controlador, int teclas){
                     controlador->estado = E_MOD_ALARMA_MIN_R;
                 }
             break;case E_ESPERA_MOD_HORARIO_R:
-                if(!isHighF(controlador->poncho,1)) controlador->estado = E_RESET;
+                if(!isHighF(controlador->poncho,4)) controlador->estado = E_RESET;
                 if(!timeOutCheck(controlador)) {
                     setTimeOut(controlador,30);
                     relojHorario(controlador->reloj,controlador->temp);
@@ -358,14 +358,13 @@ static void timeOutCheck(Control * controlador){  //optimizar?
 
 static void segRefParpadeo(Control * ctrl){
     ctrl->parpadeo = !ctrl->parpadeo;
+    //ctrl->parpadeo = 0;
 }
 void timerCtrl(Control * ctrl){ //crítico para no perder la hora
     //timeOutCheck(ctrl);
     if (relojTick(relojDe(ctrl))) {
         segRefParpadeo(ctrl);
-        if(ctrl->estado == E_MOSTRAR_HORA){
-            guardarPantalla(ctrl);
-        }
+        guardarPantalla(ctrl);        
     } 
 }
 Poncho_p ponchoDe(Control * controlador){
@@ -373,4 +372,8 @@ Poncho_p ponchoDe(Control * controlador){
 }
 Reloj * relojDe(Control * controlador){
     return controlador->reloj;
+}
+
+ESTADOS getEstado(Control * controlador){
+    return controlador->estado;
 }

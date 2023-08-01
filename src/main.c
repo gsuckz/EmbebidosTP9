@@ -64,7 +64,7 @@ void ControladorAlarma(bool estado){
 void Refresh_display_Task(void *none){
     while (1){
         PonchoDrawDisplay(poncho); 
-        vTaskDelay(pdMS_TO_TICKS(5)); //refresca el display cada 5ms
+        vTaskDelay(pdMS_TO_TICKS(3)); //refresca el display cada 5ms
     }
 }
 void Check_key_Task(void *none){
@@ -75,14 +75,14 @@ void Check_key_Task(void *none){
         if(PonchoBotonCancelar(poncho))     {
             teclas +=CANCELAR;}
         if(PonchoBotonFuncion(poncho,1))    {
-            teclas +=F1;}
+            teclas +=ACEPTAR;}
         if(PonchoBotonFuncion(poncho,2))    {
             teclas +=F2;}
         if(PonchoBotonFuncion(poncho,3))    {
             teclas +=F3;}
         if(PonchoBotonFuncion(poncho,4))    {
             teclas +=F4;}
-        if(teclas){
+        if(teclas || ((getEstado(controlador) <= 4) && (getEstado(controlador) >= 1))){
             procesarBotones(controlador,teclas); //La funcion es llamada en los flancos altos de la detección, así toma los casos de isHigh
         }
         vTaskDelay(pdMS_TO_TICKS(20)); //verifica las teclas cada 20ms

@@ -61,4 +61,5 @@ Control * crearControlador(int ticks_seg, void (*ControladorAlarma)(bool), Ponch
  * @return Reloj* 
  */
 Reloj * relojDe(Control * controlador);
+ESTADOS getEstado(Control * controlador);
 #endif
