@@ -64,7 +64,7 @@ void ControladorAlarma(bool estado){
 void Refresh_display_Task(void *none){
     while (1){
         PonchoDrawDisplay(poncho); 
-        vTaskDelay(pdMS_TO_TICKS(30)); //refresca el display cada 30ms
+        vTaskDelay(pdMS_TO_TICKS(5)); //refresca el display cada 5ms
     }
 }
 void Check_key_Task(void *none){
@@ -93,7 +93,7 @@ void Timer_Task(void *none){
     taskENTER_CRITICAL();
     timerCtrl(controlador);
     taskEXIT_CRITICAL();
-    vTaskDelay(TICKS_SEG_SO / CANTIDAD_TICKS_POR_SEGUNDO_RELOJ); //Chequear
+    vTaskDelay(TICKS_SEG_SO / CANTIDAD_TICKS_POR_SEGUNDO_RELOJ); //Es mas preciso llamar poco?
     }
 }      
 int main(void) {

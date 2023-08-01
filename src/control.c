@@ -20,7 +20,7 @@ typedef struct Control{
  * @param segundos 
  */
 static void setTimeOut(Control * controlador, int segundos){
-    controlador->TimeOut = segundos * CANTIDAD_TICKS_POR_SEGUNDO * ;
+    controlador->TimeOut = segundos * CANTIDAD_TICKS_POR_SEGUNDO_RELOJ ;
 }
 /**
  * @brief Borra (escribiendo un caracter desconocido) en los minutos
@@ -158,7 +158,7 @@ void procesarBotones(Control * controlador, int teclas){
                 if(teclas & CANCELAR) setAlarmaEstado(controlador->reloj,OFF);
             break;case E_ESPERA_MOD_ALARMA:
                 if(!isHighF(controlador->poncho,2)) controlador->estado = E_MOSTRAR_HORA;
-                if(!controlador->TimeOut) {
+                if(!controlador->TimeOut) { 
                     setTimeOut(controlador,30);
                     getAlarmaHora(controlador->reloj,controlador->temp);
                     controlador->estado = E_MOD_ALARMA_MIN;
@@ -319,7 +319,7 @@ void procesarBotones(Control * controlador, int teclas){
             break;default:
             break;
         }    
-    guardarPantalla(controlador->poncho);
+    guardarPantalla(controlador);
 }
 
 static void timeOutCheck(Control * controlador){  //optimizar?
@@ -340,7 +340,7 @@ void timerCtrl(Control * ctrl){ //crítico para no perder la hora
     if (relojTick(relojDe(ctrl))) {
         segRefParpadeo(ctrl);
         if(ctrl->estado == E_MOSTRAR_HORA){
-            guardarPantalla;
+            guardarPantalla(ctrl);
         }
     } 
 }
