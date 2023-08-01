@@ -75,7 +75,7 @@ void Check_key_Task(void *none){
         if(PonchoBotonCancelar(poncho))     {
             teclas +=CANCELAR;}
         if(PonchoBotonFuncion(poncho,1))    {
-            teclas +=ACEPTAR;}
+            teclas +=F1;}
         if(PonchoBotonFuncion(poncho,2))    {
             teclas +=F2;}
         if(PonchoBotonFuncion(poncho,3))    {
