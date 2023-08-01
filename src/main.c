@@ -106,12 +106,10 @@ int main(void) {
     SysTick_Config(SystemCoreClock /(TICKS_SEG_SO));
     poncho = PonchoInit();
     controlador = crearControlador(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ, ControladorAlarma ,poncho); 
-    while (1){ ///LAZO PRINCIPAL 
         xTaskCreate(Refresh_display_Task, "Refresh_display_Task", 256, NULL, tskIDLE_PRIORITY + 1,NULL);
         xTaskCreate(Control_Task, "Control_Task", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
         xTaskCreate(Timer_Task, "Timer_Task", 256, NULL,tskIDLE_PRIORITY + 4, NULL);
         vTaskStartScheduler();
-    }
 }
 /* === End of documentation ==================================================================== */
 /** @} End of module definition for doxygen */
