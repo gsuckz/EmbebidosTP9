@@ -20,11 +20,11 @@
 
 typedef enum ESTADOS{
     E_RESET,
+    E_MOSTRAR_HORA,
     E_ESPERA_MOD_HORARIO_R,
     E_ESPERA_MOD_HORARIO,
     E_ESPERA_MOD_ALARMA_R,
     E_ESPERA_MOD_ALARMA,
-    E_MOSTRAR_HORA,
     E_MOD_HORARIO_MIN,
     E_MOD_HORARIO_HOR,
     E_MOD_ALARMA_MIN,
@@ -41,7 +41,7 @@ typedef struct Control Control;
  * 
  * @param controlador 
  */
-void procesarBotones(Control * controlador, int teclas);
+void procesar(Control * controlador, int teclas);
 /**
  * @brief Refresca el display del controlador mostrando la informacion adecuada
  * 
