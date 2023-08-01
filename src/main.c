@@ -82,7 +82,12 @@ void Check_key_Task(void *none){
             teclas +=F3;}
         if(PonchoBotonFuncion(poncho,4))    {
             teclas +=F4;}
-        if(teclas || ((getEstado(controlador) <= 4) && (getEstado(controlador) >= 1))){
+        if(isHighF(poncho,1))    {
+            teclas +=F1H;}
+        if(isHighF(poncho,2))    {
+            teclas +=F2H;}
+
+        if(teclas){
             procesarBotones(controlador,teclas); //La funcion es llamada en los flancos altos de la detección, así toma los casos de isHigh
         }
         vTaskDelay(pdMS_TO_TICKS(20)); //verifica las teclas cada 20ms

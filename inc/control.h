@@ -15,6 +15,8 @@
 #define F2 8
 #define F3 16
 #define F4 32
+#define F1H 64
+#define F2H 128
 
 typedef enum ESTADOS{
     E_RESET,
