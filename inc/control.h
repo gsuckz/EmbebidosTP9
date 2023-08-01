@@ -6,8 +6,8 @@
 #include "reloj.h"
 #include "control.h"
 
-#define CANTIDAD_TICKS_POR_SEGUNDO_SO 1000
-#define CANTIDAD_TICKS_POR_SEGUNDO_RELOJ 1000
+#define TICKS_SEG_SO 1000
+#define CANTIDAD_TICKS_POR_SEGUNDO_RELOJ 10
 
 #define ACEPTAR 1
 #define CANCELAR 2
@@ -39,7 +39,7 @@ typedef struct Control Control;
  * 
  * @param controlador 
  */
-void checkBotones(Control * controlador, int teclas);
+void procesarBotones(Control * controlador, int teclas);
 /**
  * @brief Refresca el display del controlador mostrando la informacion adecuada
  * 
@@ -51,7 +51,7 @@ void guardarPantalla(Control * controlador);
  * 
  * @param ctrl 
  */
-void sysTickCtrl(Control * ctrl);
+void timerCtrl(Control * ctrl);
 Control * crearControlador(int ticks_seg, void (*ControladorAlarma)(bool), Poncho_p poncho);
 /**
  * @brief Devuelve el putnero al reloj del controlador, se usa para podes usar la funcion

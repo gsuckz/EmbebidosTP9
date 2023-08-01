@@ -122,7 +122,7 @@ void guardarPantalla(Control * controlador){
     PonchoWriteDisplay(controlador->poncho, hhmm); 
     //PonchoDrawDisplay(controlador->poncho); 
 }
-void checkBotones(Control * controlador, int teclas){            
+void procesarBotones(Control * controlador, int teclas){            
             if ((getEstadoAlarma(controlador->reloj)) == ON){    //Los botones (ACEPTAR) y (CANCELAR) solo funcionan para 
                 if(teclas & ACEPTAR) { // posoponer o apagar la alarma, cuando esta sonando. 
                     relojSnooze(controlador->reloj,5);
@@ -319,6 +319,7 @@ void checkBotones(Control * controlador, int teclas){
             break;default:
             break;
         }    
+    guardarPantalla(controlador->poncho);
 }
 
 static void timeOutCheck(Control * controlador){  //optimizar?
@@ -328,13 +329,13 @@ static void timeOutCheck(Control * controlador){  //optimizar?
     }
     if (controlador->TimeOut == 1){
         controlador->TimeOut=0;
-        checkBotones(controlador,0); //Cuando hay un TimeOut cheuea los botones
+        procesarBotones(controlador,0); //Cuando hay un TimeOut cheuea los botones
     } 
 }
 static void segRefParpadeo(Control * ctrl){
     ctrl->parpadeo = !ctrl->parpadeo;
 }
-void sysTickCtrl(Control * ctrl){
+void timerCtrl(Control * ctrl){ //crítico para no perder la hora
     timeOutCheck(ctrl);
     if (relojTick(relojDe(ctrl))) {
         segRefParpadeo(ctrl);

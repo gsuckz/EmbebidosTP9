@@ -70,7 +70,7 @@ void Refresh_display_Task(void *none){
 void Check_key_Task(void *none){
     while (1){
         int teclas = 0;
-        if(PonchoBotonAceptar(poncho))      { //Funciones lentas para checkear los botones?
+        if(PonchoBotonAceptar(poncho))      { //Funciones lentas para checkear los botones? Probar si necesita optimizar
             teclas +=ACEPTAR;}
         if(PonchoBotonCancelar(poncho))     {
             teclas +=CANCELAR;}
@@ -83,26 +83,28 @@ void Check_key_Task(void *none){
         if(PonchoBotonFuncion(poncho,4))    {
             teclas +=F4;}
         if(teclas){
-            checkBotones(controlador,teclas); //La funcion es llamada en los flancos altos de la detección
+            procesarBotones(controlador,teclas); //La funcion es llamada en los flancos altos de la detección, así toma los casos de isHigh
         }
         vTaskDelay(pdMS_TO_TICKS(20)); //verifica las teclas cada 20ms
     }
 }
-void SysTick_Handler_Task(void *none){
+void Timer_Task(void *none){
     while(1){
-    sysTickCtrl(controlador);
-    vTaskDelay(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ / CANTIDAD_TICKS_POR_SEGUNDO_SO); //Chequear
+    taskENTER_CRITICAL();
+    timerCtrl(controlador);
+    taskEXIT_CRITICAL();
+    vTaskDelay(TICKS_SEG_SO / CANTIDAD_TICKS_POR_SEGUNDO_RELOJ); //Chequear
     }
 }      
 int main(void) {
     SystemCoreClockUpdate();
-    SysTick_Config(SystemCoreClock /(CANTIDAD_TICKS_POR_SEGUNDO_SO));
+    SysTick_Config(SystemCoreClock /(TICKS_SEG_SO));
     poncho = PonchoInit();
     controlador = crearControlador(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ, ControladorAlarma ,poncho); 
     while (1){ ///LAZO PRINCIPAL 
         xTaskCreate(Refresh_display_Task, "Refresh_display_Task", 256, NULL, tskIDLE_PRIORITY + 1,NULL);
         xTaskCreate(Check_key_Task, "Check_key_Task", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
-        xTaskCreate(SysTick_Handler_Task, "SysTick_Handler_Task", 256, NULL,tskIDLE_PRIORITY + 4, NULL);
+        xTaskCreate(Timer_Task, "Timer_Task", 256, NULL,tskIDLE_PRIORITY + 4, NULL);
         vTaskStartScheduler();
     }
 }
