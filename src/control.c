@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "control.h"
+#include "task.h"
 
 #define PRESCALER 1 //Se usa para accelerar ael reloj para las pruebas
 typedef struct Control{
@@ -19,9 +20,17 @@ typedef struct Control{
  * @param controlador 
  * @param segundos 
  */
+
+/*
 static void setTimeOut(Control * controlador, int segundos){
     controlador->TimeOut = segundos * CANTIDAD_TICKS_POR_SEGUNDO_RELOJ ;
 }
+*/
+
+static void setTimeOut(Control * controlador, int segundos){
+    controlador->TimeOut = segundos * TICKS_SEG_SO + xTaskGetTickCount();
+}
+
 /**
  * @brief Borra (escribiendo un caracter desconocido) en los minutos
  * 
@@ -158,14 +167,14 @@ void procesarBotones(Control * controlador, int teclas){
                 if(teclas & CANCELAR) setAlarmaEstado(controlador->reloj,OFF);
             break;case E_ESPERA_MOD_ALARMA:
                 if(!isHighF(controlador->poncho,2)) controlador->estado = E_MOSTRAR_HORA;
-                if(!controlador->TimeOut) { 
+                if(!timeOutCheck(controlador)) { 
                     setTimeOut(controlador,30);
                     getAlarmaHora(controlador->reloj,controlador->temp);
                     controlador->estado = E_MOD_ALARMA_MIN;
                 }
             break;case E_ESPERA_MOD_HORARIO:
                 if(!isHighF(controlador->poncho,1)) controlador->estado = E_MOSTRAR_HORA;
-                if(!controlador->TimeOut) {
+                if(!timeOutCheck(controlador)) {
                     setTimeOut(controlador,30);
                     relojHorario(controlador->reloj,controlador->temp);
                     controlador->estado = E_MOD_HORARIO_MIN;
@@ -179,7 +188,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarMinutos(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_MOSTRAR_HORA;
                 }
                 if(teclas & ACEPTAR){
@@ -195,7 +204,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarHoras(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_MOSTRAR_HORA;
                 }   
                 if(teclas & ACEPTAR){
@@ -213,7 +222,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarMinutos(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_MOSTRAR_HORA;
                 }
                 if(teclas & ACEPTAR){
@@ -229,7 +238,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarHoras(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_MOSTRAR_HORA;
                 }   
                 if(teclas & ACEPTAR){
@@ -238,14 +247,14 @@ void procesarBotones(Control * controlador, int teclas){
                 }              
             break;case E_ESPERA_MOD_ALARMA_R:
                 if(!isHighF(controlador->poncho,2)) controlador->estado = E_RESET;
-                if(!controlador->TimeOut) {
+                if(!timeOutCheck(controlador)) {
                     setTimeOut(controlador,30);
                     getAlarmaHora(controlador->reloj,controlador->temp);
                     controlador->estado = E_MOD_ALARMA_MIN_R;
                 }
             break;case E_ESPERA_MOD_HORARIO_R:
                 if(!isHighF(controlador->poncho,1)) controlador->estado = E_RESET;
-                if(!controlador->TimeOut) {
+                if(!timeOutCheck(controlador)) {
                     setTimeOut(controlador,30);
                     relojHorario(controlador->reloj,controlador->temp);
                     controlador->estado = E_MOD_HORARIO_MIN_R;
@@ -259,7 +268,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarMinutos(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_RESET;
                 }
                 if(teclas & ACEPTAR){
@@ -275,7 +284,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarHoras(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_RESET;
                 }   
                 if(teclas & ACEPTAR){
@@ -293,7 +302,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarMinutos(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_RESET;
                 }
                 if(teclas & ACEPTAR){
@@ -309,7 +318,7 @@ void procesarBotones(Control * controlador, int teclas){
                     setTimeOut(controlador,30);
                     decrementarHoras(controlador->temp);
                 }
-                if(teclas & CANCELAR || !controlador->TimeOut){
+                if(teclas & CANCELAR || !timeOutCheck(controlador)){
                     controlador->estado = E_RESET;
                 }   
                 if(teclas & ACEPTAR){
@@ -321,7 +330,7 @@ void procesarBotones(Control * controlador, int teclas){
         }    
     guardarPantalla(controlador);
 }
-
+/*
 static void timeOutCheck(Control * controlador){  //optimizar?
     if(controlador->TimeOut>1) {
         controlador->TimeOut--;
@@ -332,11 +341,22 @@ static void timeOutCheck(Control * controlador){  //optimizar?
         procesarBotones(controlador,0); //Cuando hay un TimeOut cheuea los botones
     } 
 }
+*/
+static bool timeOutCheck(Control * controlador){  //optimizar?
+    bool huboTimeOut = 0;
+    if(controlador->TimeOut >= xTaskGetTickCount()){
+        huboTimeOut = true;
+    }
+        return huboTimeOut;
+}
+
+
+
 static void segRefParpadeo(Control * ctrl){
     ctrl->parpadeo = !ctrl->parpadeo;
 }
 void timerCtrl(Control * ctrl){ //crítico para no perder la hora
-    timeOutCheck(ctrl);
+    //timeOutCheck(ctrl);
     if (relojTick(relojDe(ctrl))) {
         segRefParpadeo(ctrl);
         if(ctrl->estado == E_MOSTRAR_HORA){
