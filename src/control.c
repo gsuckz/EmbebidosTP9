@@ -339,7 +339,9 @@ void timerCtrl(Control * ctrl){ //crítico para no perder la hora
     timeOutCheck(ctrl);
     if (relojTick(relojDe(ctrl))) {
         segRefParpadeo(ctrl);
-        guardarPantalla(ctrl);
+        if(ctrl->estado == E_MOSTRAR_HORA){
+            guardarPantalla;
+        }
     } 
 }
 Poncho_p ponchoDe(Control * controlador){
