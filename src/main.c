@@ -64,10 +64,10 @@ void ControladorAlarma(bool estado){
 void Refresh_display_Task(void *none){
     while (1){
         PonchoDrawDisplay(poncho); 
-        vTaskDelay(pdMS_TO_TICKS(3)); //refresca el display cada 5ms
+        vTaskDelay(pdMS_TO_TICKS(5)); //refresca el display cada 5ms
     }
 }
-void Check_key_Task(void *none){
+void Control_Task(void *none){
     while (1){
         int teclas = 0;
         if(PonchoBotonAceptar(poncho))      { //Funciones lentas para checkear los botones? Probar si necesita optimizar
@@ -108,7 +108,7 @@ int main(void) {
     controlador = crearControlador(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ, ControladorAlarma ,poncho); 
     while (1){ ///LAZO PRINCIPAL 
         xTaskCreate(Refresh_display_Task, "Refresh_display_Task", 256, NULL, tskIDLE_PRIORITY + 1,NULL);
-        xTaskCreate(Check_key_Task, "Check_key_Task", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
+        xTaskCreate(Control_Task, "Control_Task", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
         xTaskCreate(Timer_Task, "Timer_Task", 256, NULL,tskIDLE_PRIORITY + 4, NULL);
         vTaskStartScheduler();
     }
