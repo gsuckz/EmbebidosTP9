@@ -1,5 +1,7 @@
 #include <stdbool.h>
 #include "control.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 #include "task.h"
 
 #define PRESCALER 1 //Se usa para accelerar ael reloj para las pruebas
@@ -131,6 +133,15 @@ void guardarPantalla(Control * controlador){
     PonchoWriteDisplay(controlador->poncho, hhmm); 
     //PonchoDrawDisplay(controlador->poncho); 
 }
+
+static bool timeOutCheck(Control * controlador){  //optimizar?
+    bool huboTimeOut = 0;
+    if(controlador->TimeOut >= xTaskGetTickCount()){
+        huboTimeOut = true;
+    }
+        return huboTimeOut;
+}
+
 void procesarBotones(Control * controlador, int teclas){            
             if ((getEstadoAlarma(controlador->reloj)) == ON){    //Los botones (ACEPTAR) y (CANCELAR) solo funcionan para 
                 if(teclas & ACEPTAR) { // posoponer o apagar la alarma, cuando esta sonando. 
@@ -342,13 +353,6 @@ static void timeOutCheck(Control * controlador){  //optimizar?
     } 
 }
 */
-static bool timeOutCheck(Control * controlador){  //optimizar?
-    bool huboTimeOut = 0;
-    if(controlador->TimeOut >= xTaskGetTickCount()){
-        huboTimeOut = true;
-    }
-        return huboTimeOut;
-}
 
 
 
