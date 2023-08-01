@@ -6,7 +6,15 @@
 #include "reloj.h"
 #include "control.h"
 
-#define CANTIDAD_TICKS_POR_SEGUNDO 100
+#define CANTIDAD_TICKS_POR_SEGUNDO_SO 1000
+#define CANTIDAD_TICKS_POR_SEGUNDO_RELOJ 1000
+
+#define ACEPTAR 1
+#define CANCELAR 2
+#define F1 4
+#define F2 8
+#define F3 16
+#define F4 32
 
 typedef enum ESTADOS{
     E_RESET,
@@ -31,13 +39,13 @@ typedef struct Control Control;
  * 
  * @param controlador 
  */
-void checkBotones(Control * controlador);
+void checkBotones(Control * controlador, int teclas);
 /**
  * @brief Refresca el display del controlador mostrando la informacion adecuada
  * 
  * @param controlador 
  */
-void mostrarEnPantalla(Control * controlador);
+void guardarPantalla(Control * controlador);
 /**
  * @brief Funcion para actualizar los valores de tiempo del controlador
  * 

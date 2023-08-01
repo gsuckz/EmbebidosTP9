@@ -78,7 +78,7 @@ bool PonchoBotonCancelar(Poncho * poncho) {
     static bool estado;
     bool estadon = readPin(&poncho->CANCELAR);
 
-    if (estado && !estadon) {
+    if (!estado && estadon) {
         estado = estadon;
         return 1;
     }
@@ -92,7 +92,7 @@ bool PonchoBotonAceptar(Poncho * poncho) {
     static bool estado_anterior_PBA;
     bool estadon = readPin(&poncho->ACEPTAR);
 
-    if (estado_anterior_PBA && !estadon) {
+    if (!estado_anterior_PBA && estadon) {
         estado_anterior_PBA = estadon;
         return 1;
     }
@@ -107,7 +107,7 @@ bool PonchoBotonFuncion(Poncho * poncho, uint8_t i) {
     i--;
     bool estadon = readPin(&poncho->F[i]);
 
-    if (estado[i] && !estadon) {
+    if (!estado[i] && estadon) {
         estado[i] = estadon;
         return 1;
     }

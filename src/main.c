@@ -41,6 +41,9 @@
 #include "poncho.h"
 #include "reloj.h"
 #include "control.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "task.h"
 #include <stdbool.h>
 /* === Macros definitions ====================================================================== */
 
@@ -58,18 +61,49 @@ void ControladorAlarma(bool estado){
     PonchoBuzzer(poncho,estado);
     return;
 }
-void SysTick_Handler(void){
-    sysTickCtrl(controlador);
+void Refresh_display_Task(void *none){
+    while (1){
+        PonchoDrawDisplay(poncho); 
+        vTaskDelay(pdMS_TO_TICKS(30)); //refresca el display cada 30ms
+    }
 }
-
+void Check_key_Task(void *none){
+    while (1){
+        int teclas = 0;
+        if(PonchoBotonAceptar(poncho))      { //Funciones lentas para checkear los botones?
+            teclas +=ACEPTAR;}
+        if(PonchoBotonCancelar(poncho))     {
+            teclas +=CANCELAR;}
+        if(PonchoBotonFuncion(poncho,1))    {
+            teclas +=F1;}
+        if(PonchoBotonFuncion(poncho,2))    {
+            teclas +=F2;}
+        if(PonchoBotonFuncion(poncho,3))    {
+            teclas +=F3;}
+        if(PonchoBotonFuncion(poncho,4))    {
+            teclas +=F4;}
+        if(teclas){
+            checkBotones(controlador,teclas); //La funcion es llamada en los flancos altos de la detección
+        }
+        vTaskDelay(pdMS_TO_TICKS(20)); //verifica las teclas cada 20ms
+    }
+}
+void SysTick_Handler_Task(void *none){
+    while(1){
+    sysTickCtrl(controlador);
+    vTaskDelay(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ / CANTIDAD_TICKS_POR_SEGUNDO_SO); //Chequear
+    }
+}      
 int main(void) {
     SystemCoreClockUpdate();
-    SysTick_Config(SystemCoreClock /(CANTIDAD_TICKS_POR_SEGUNDO));
+    SysTick_Config(SystemCoreClock /(CANTIDAD_TICKS_POR_SEGUNDO_SO));
     poncho = PonchoInit();
-    controlador = crearControlador(CANTIDAD_TICKS_POR_SEGUNDO, ControladorAlarma ,poncho); 
+    controlador = crearControlador(CANTIDAD_TICKS_POR_SEGUNDO_RELOJ, ControladorAlarma ,poncho); 
     while (1){ ///LAZO PRINCIPAL 
-        checkBotones(controlador);         
-        mostrarEnPantalla(controlador);  
+        xTaskCreate(Refresh_display_Task, "Refresh_display_Task", 256, NULL, tskIDLE_PRIORITY + 1,NULL);
+        xTaskCreate(Check_key_Task, "Check_key_Task", 256, NULL, tskIDLE_PRIORITY + 2, NULL);
+        xTaskCreate(SysTick_Handler_Task, "SysTick_Handler_Task", 256, NULL,tskIDLE_PRIORITY + 4, NULL);
+        vTaskStartScheduler();
     }
 }
 /* === End of documentation ==================================================================== */
