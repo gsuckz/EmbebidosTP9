@@ -82,7 +82,7 @@ pinGPIO const tablaConfigPinGpio[MUX_NUM_PUERTOS][MUX_NUM_PINES] = {
 
     [6] = {[0] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 0, .funcion = 4},
            [1] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 1, .funcion = 4},
-           [2] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 2, .funcion = 4},
+           [2] = {.numRegistroGPIO = 3, .bitRegistroGPIO = 4, .funcion = 0},
            [3] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 3, .funcion = 4},
            [4] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 4, .funcion = 4},
            [5] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 5, .funcion = 4},
@@ -90,7 +90,7 @@ pinGPIO const tablaConfigPinGpio[MUX_NUM_PUERTOS][MUX_NUM_PINES] = {
            [7] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 15, .funcion = 4},
            [8] = {.numRegistroGPIO = 5, .bitRegistroGPIO = 16, .funcion = 4},
            [9] = {.numRegistroGPIO = 1, .bitRegistroGPIO = 10, .funcion = 0},
-           [10] = {.numRegistroGPIO = 0, .bitRegistroGPIO = 14, .funcion = 0},
+           [10] = {.numRegistroGPIO = 3, .bitRegistroGPIO = 6, .funcion = 0},
            [11] = {.numRegistroGPIO = 1, .bitRegistroGPIO = 11, .funcion = 0},
-           [12] = {.numRegistroGPIO = 1, .bitRegistroGPIO = 12, .funcion = 0}},
+           [12] = {.numRegistroGPIO = 2, .bitRegistroGPIO = 8, .funcion = 0}},
 };

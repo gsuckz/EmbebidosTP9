@@ -14,6 +14,55 @@ typedef struct Poncho {
     Pin BUZZER;
 } Poncho;
 
+
+#define LED_R_PORT 2
+#define LED_R_PIN 0
+#define LED_G_PORT 2
+#define LED_G_PIN 1
+#define LED_B_PORT 2
+#define LED_B_PIN 2
+#define LED_1_PORT 2
+#define LED_1_PIN 10
+#define LED_2_PORT 2
+#define LED_2_PIN 11
+#define LED_3_PORT 2
+#define LED_3_PIN 12
+#define TEC_1_PORT 1
+#define TEC_1_PIN 0
+#define TEC_2_PORT 1
+#define TEC_2_PIN 1
+#define TEC_3_PORT 1
+#define TEC_3_PIN 2
+#define TEC_4_PORT 1
+#define TEC_4_PIN 6
+typedef enum LED{
+    LED_1,
+    LED_2,
+    LED_3,
+    LED_R,
+    LED_G,
+    LED_B,
+    LED_MAX
+}LED;
+
+
+
+Pin ledArray[LED_MAX] = {
+    [LED_1] = {LED_1_PORT,LED_1_PIN},
+    [LED_2] = {LED_2_PORT,LED_2_PIN},
+    [LED_3] = {LED_3_PORT,LED_3_PIN},
+    [LED_R] = {LED_R_PORT,LED_R_PIN},
+    [LED_G] = {LED_G_PORT,LED_G_PIN},
+    [LED_B] = {LED_B_PORT,LED_B_PIN},
+};
+
+
+const Pin analizador[3]={
+    [0] = {6,12},
+    [1] = {6,10},
+    [2] = {6,5}
+};
+
 static Poncho poncho = {.disp_digito = {[0] = {.puerto = DIGIT_1_PORT, .pin = DIGIT_1_PIN},
                                         [1] = {.puerto = DIGIT_2_PORT, .pin = DIGIT_2_PIN},
                                         [2] = {.puerto = DIGIT_3_PORT, .pin = DIGIT_3_PIN},
@@ -39,6 +88,8 @@ static Poncho poncho = {.disp_digito = {[0] = {.puerto = DIGIT_1_PORT, .pin = DI
                               [3] = {.puerto = KEY_F4_PORT, .pin = KEY_F4_PIN}},
                         .BUZZER = {.puerto = BUZZER_PORT, .pin= BUZZER_PIN}
 };
+
+
 static void ctrl_segmento(uint8_t seg, bool estado);
 static void ctrl_digito(uint8_t dig, bool estado) {
     writePin(&(poncho.disp_digito[dig]), estado);
@@ -58,6 +109,15 @@ Poncho * PonchoInit(void) {
         configPin(&poncho.disp_segmentos[i], SALIDA);
         writePin(&poncho.disp_segmentos[i], 1);
     }
+    for (int i=0;i<(LED_MAX);i++)
+    {
+        configPin(&ledArray[i], SALIDA);
+        writePin(&ledArray[i], 0);
+    };
+    configPin(&analizador[0],SALIDA);
+    configPin(&analizador[1],SALIDA);
+    configPin(&analizador[2],SALIDA);
+    
     poncho.display = displayInit(ctrl_segmento, ctrl_digito, NUM_DISPLAY);
     return &poncho;
 }
@@ -138,3 +198,4 @@ void PonchoPuntoMode(Poncho * poncho,uint8_t i, bool estado){
 bool isHighF(Poncho_p poncho, uint8_t funcion){
     return readPin(&poncho->F[funcion - 1]);
 }
+

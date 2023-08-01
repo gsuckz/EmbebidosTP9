@@ -6,7 +6,10 @@
 #include <stdint.h>
 
 
+
 typedef struct Poncho * Poncho_p;
+
+extern const Pin analizador[3];
 
 /**
  * @brief Inicializa los pines del poncho, ademàs devuleve un puntero al obj. Poncho

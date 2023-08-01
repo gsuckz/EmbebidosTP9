@@ -16,9 +16,10 @@ void configPin(Pin const * pin_p, HAL_ModoPin modo) {
     if (!pin_p)
         return;
     pinGPIO const * pin = getPin(pin_p);
-    uint16_t modo_ = 64;
+    uint16_t modo_ = SCU_MODE_INBUFF_EN;//64;
     if (modo)
-        modo_ = 80;
+        //modo_ =  SCU_MODE_4MA_DRIVESTR  | SCU_MODE_INACT | SCU_MODE_INBUFF_EN;//80;
+        modo_ = MD_EZI;
     Chip_SCU_PinMuxSet(pin_p->puerto, pin_p->pin, modo_ | pin->funcion);
     Chip_GPIO_SetPinState(LPC_GPIO_PORT, pin->numRegistroGPIO, pin->bitRegistroGPIO, false);
     Chip_GPIO_SetPinDIR(LPC_GPIO_PORT, pin->numRegistroGPIO, pin->bitRegistroGPIO, modo);
